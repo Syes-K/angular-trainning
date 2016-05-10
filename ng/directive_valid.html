@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="../bower_components/angular/angular.js"></script>
+    <script>
+        var myApp = angular.module('pt',[]);
+        myApp.controller('MyCtrl',['$scope','$rootScope',function ($scope,$rootScope) {
+            $scope.age=12;
+            $scope.alert=function () {
+              console.log($scope.$id);
+              console.log($rootScope.$id);
+            };
+        }]);
+
+        myApp.directive('ptMin',function () {
+            return {
+                restrict:'A',
+                scope:{
+                    min:'@ptMin'
+                },
+                require:'ngModel',
+                link:function (scope,element,attrs,ngModel) {
+                    ngModel.$formatters.push(function () {
+                        var min = +scope.min;
+                        var value = ngModel.$modelValue;
+                        if(+value<min){
+                            ngModel.$setValidity('ptMin',false);
+                        }else{
+                            ngModel.$setValidity('ptMin',true);
+                            return value;
+                        }
+                    });
+                    ngModel.$parsers.push(function () {
+                        var min = +scope.min;
+                        var value = ngModel.$viewValue;
+                        if(+value<min){
+                            ngModel.$setValidity('ptMin',false);
+                        }else{
+                            ngModel.$setValidity('ptMin',true);
+                            return value;
+                        }
+                    });
+                }
+            };
+        });
+    </script>
+</head>
+<body ng-app="pt">
+<h1>验证组建</h1>
+<div ng-controller="MyCtrl">
+    <div ng-form name="myForm1" >
+        <div>
+            <label>  email:<input type="text" name="email" ng-model="email" required></label>
+            <div ng-show="myForm1.email.$invalid">please input email address</div>
+        </div>
+        <div>
+            <label>  age:<input pt-min="20" type="number" max="100"  name="age" ng-model="age" required></label>
+            <div ng-show="myForm1.age.$error.required">必须输入</div>
+            <div ng-show="myForm1.age.$error.max">不能超过100岁</div>
+            <div ng-show="myForm1.age.$error.number">不是一个数字</div>
+            <div ng-show="myForm1.age.$error.ptMin">不能小于20</div>
+            <div>{{myForm1.age}}</div>
+        </div>
+
+        <button type="submit" ng-disabled="myForm1.$invalid" >commit</button>
+        <hr>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+.table thead th{
+    text-align: center;
+}
+
+.input-title-md{
+    text-align: right;
+    width: 100px;
+}
+.ng-invalid{
+    border: 1px solid red;
+}
+
+
+.cls1{
+    background-color: red;
+}

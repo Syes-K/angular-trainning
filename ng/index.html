@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular</title>
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../bower_components/angular/angular.js"></script>
+    <script>
+        var ma = angular.module('myApp', []);
+
+        ma.controller('UserController', ['$scope', function ($scope) {
+            $scope.sexList = [{code: 'M', text: '男'}, {code: 'F', text: '女'}];
+            $scope.userList = [];
+            $scope.addUser = function () {
+                $scope.userList.push({
+                    name: $scope.name,
+                    sex: {
+                        code: $scope.selectedSex.code,
+                        text: $scope.selectedSex.text
+                    },
+                    salary:{
+                        currency:$scope.selectCurrency,
+                        value:$scope.salaryValue
+                    }
+                });
+                $scope.name = '';
+                $scope.selectedSex = null;
+            };
+        }]);
+
+
+    </script>
+</head>
+<body>
+<div class="container"  ng-controller="UserController">
+    <div class="page-header">
+        <h1>Angular </h1>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class=" input-group">
+                <span class="input-group-addon input-title-md">Name</span>
+                <input class="form-control" type="text" ng-model="name">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class=" input-group">
+                <span class="input-group-addon input-title-md">Sex</span>
+                <select class="form-control" ng-model="selectedSex"
+                        ng-options=" v.text for v in sexList ">
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class=" input-group">
+                <span class="input-group-addon input-title-md">Currency</span>
+                <select class="form-control" ng-model="selectCurrency"
+                        ng-options=" v for v in ['¥','$','€'] ">
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class=" input-group">
+                <span class="input-group-addon input-title-md">Salary</span>
+                <input class="form-control" type="text" ng-model="salaryValue">
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row text-center">
+        <button class="btn btn-default " ng-click="addUser()"> Add user</button>
+    </div>
+    <hr>
+    <div class="row">
+        <table class="table table-bordered" ng-show="userList.length">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Sex</th>
+                <th>Salary</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="u in userList|orderBy:u.name" ng-class="{'bg-info':$odd}">
+                <td>{{u.name}}</td>
+                <td>
+                    {{u.sex.code}}:{{u.sex.text}}
+                </td>
+                <td class="text-right">
+                    {{u.salary.value| currency:u.salary.currency}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    angular.bootstrap(document,['myApp'])
+</script>
+</body>
+</html>

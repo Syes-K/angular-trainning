@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="../bower_components/angular/angular.js"></script>
+    <script>
+        var myApp = angular.module('pt.select', []);
+        myApp.controller('MyController',function ($scope) {
+            $scope.formatSelectText = function (item) {
+               return !angular.isUndefined(item)?+item:'';
+            };
+            $scope.number=2;
+        });
+        myApp.directive('ptSelect', function () {
+            return {
+                restrict: 'AE',
+                replace: true,
+                transclude: true,
+                scope: {
+                    selectedValue: '=',
+                    text:'='
+                },
+                controllerAs:'myCtrl',
+                controller: function ($scope) {
+                    this.name='myCtrl';
+                    this.setValue = function (item) {
+                        $scope.selectedValue =item;
+                    };
+
+                    $scope.n =1;
+                    $scope.getHeaderText = function () {
+                        console.log($scope.n);
+                        $scope.n++;
+                        if(angular.isString($scope.text)){
+                            return  $scope.selectedValue[$scope.text]
+                        } else if (angular.isFunction($scope.text)){
+                            return $scope.text($scope.selectedValue);
+                        } else  if (angular.isUndefined($scope.text)){
+                            return $scope.selectedValue;
+                        }
+
+                    };
+                },
+                templateUrl: '../template/pt-select.html',
+                link:function (scope,element,attr,ngMode) {
+                }
+            }
+        });
+        myApp.directive('ptOption', function () {
+            return {
+                restrict: 'AE',
+                require: '^ptSelect',
+                replace: true,
+                transclude: true,
+                scope: {
+                    ptItem: '='
+                },
+                template: '<li > <a href="#"  ng-transclude></a> </li>',
+                link: function (scope, element, attr, ptSelect) {
+                    element.on('click', function () {
+                        ptSelect.setValue(scope.ptItem);
+                        scope.$apply();
+                    });
+                }
+            }
+        });
+
+        myApp.directive('tt',function () {
+            return{
+                restrict:'AE',
+                transclude: true,
+                replace: true,
+                template: '<div >  <input type="text" ng-model="ptNumber"> <div ng-transclude ></div> </div>',
+                scope:{
+                    ptNumber:'='
+                }
+            };
+        });
+    </script>
+</head>
+<body ng-app="pt.select" ng-controller="MyController">
+<div class="container">
+    <div class="page-header">
+        <h1>angular directive</h1>
+    </div>
+    <div class="">
+        <input ng-model="number"/>
+    </div>
+    <br>
+    <div class="">
+        <pt-select selected-value="number" text="formatSelectText">
+            <pt-option pt-item="i" ng-repeat="i in [1,2,3,4,5]" ng-class="{active:number==i}">
+                {{i}}
+            </pt-option>
+        </pt-select>
+
+    </div>
+    <br>
+    <div class="">
+
+        <tt pt-number="number">
+        </tt>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 bg-danger">
+            1
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12  bg-info">
+            2
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12  bg-primary">
+            3
+        </div>
+
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12  bg-warning">
+            4
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

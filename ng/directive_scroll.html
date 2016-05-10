@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .pt-scroll{
+            overflow: hidden;
+            background-color: #eeeeee;
+        }
+    </style>
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../js/nicesroll.js"></script>
+
+    <script src="../bower_components/angular/angular.js"></script>
+    <script>
+        var myApp = angular.module('pt',[]);
+
+
+
+        myApp.controller('MyCtrl2',function () {
+
+        });
+
+        myApp.directive('ptScroll',function () {
+            return {
+                restrict:'C',
+                link:function (scope,$element) {
+                    $element.niceScroll();
+                }
+            };
+        });
+    </script>
+</head>
+<body ng-app="pt">
+<h1> nice scroll</h1>
+
+<div ng-controller="MyCtrl2">
+    <div class="pt-scroll" style="height: 200px;">
+        this is nice scroll start <br>
+        please hover you mouse and scroll it
+        <div style="height: 1000px"></div>
+        this is nice scroll end
+    </div>
+</div>
+</body>
+</html>

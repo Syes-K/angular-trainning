@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../bower_components/angular/angular.js"></script>
+    <script>
+        var myApp = angular.module('MyFirstApp', []);
+        myApp.controller('MyController', ['$scope','user', function (a,u) {
+            a.myClass = function () {
+                return {'cls1': a.name == 'z3'};
+            };
+            a.myStyle = function () {
+                return {'color': 'red'};
+            };
+            a.list = [{name: 'z3', age: 21}, {name: 'li4', age: 12}];
+
+            a.clickLi = function (user) {
+                alert(user.age);
+            };
+            a.name=u.name;
+        }]);
+
+        myApp.directive('ptEngine', function () {
+            return {
+                restrict: 'EAC',
+                link : function(scope, element, attrs) {
+                    element.html(scope.name);
+                }
+            };
+        });
+        myApp.filter('trim',function () {
+            return function (input) {
+                return input.replace(/^\s\S\s$/g,'');
+            }
+        });
+
+        myApp.provider('user',function () {
+
+            this.isUsed=false;
+
+            this.$get =function () {
+                return  {
+                    name:'3'
+                };
+            }
+
+        });
+    </script>
+</head>
+<body ng-app="MyFirstApp">
+
+<div ng-controller="MyController">
+    <input type="text" ng-model="name">
+    {{name}}
+
+    <div ng-class="myClass()" class="form-control" ng-style="myStyle()">
+        name
+    </div>
+    ß
+    <ul>
+        <li ng-repeat="l in list"
+            ng-click="clickLi(l)">{{$first+l.name+$odd}}
+        </li>
+    </ul>
+    <div pt-engine>asdasd</div>
+    <div class="pt-engine">asdasd</div>
+    <pt-engine>{{-12345678.21 | currency:'$'}}</pt-engine>
+    <div>
+        {{'xx  x x   '|trim}}/2
+    </div>
+</div>
+</body>
+</html>
