@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css">
+    <style>
+        .active {
+            background-color: red;
+        }
+    </style>
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script>
+        var userList = [
+            {name:'z3',age:'22'},
+            {name:'l4',age:'45'},
+            {name:'w5',age:'15'}
+        ];
+        var myApp = angular.module('MyApp',[]);
+
+        myApp.controller('UserCtrl',function ($scope) {
+            $scope.list = userList;
+            $scope.selectUser = $scope.list[0];
+        });
+
+        myApp.directive('ptSelect',function () {
+            return {
+                restrict:'E',
+                transclude:true,
+                scope:{
+                    value:'=ptSelectValue'
+                },
+                replace: true,
+                controller:function ($scope) {
+                    this.setValue = function (item) {
+                        $scope.value =item;
+                    };
+                },
+                templateUrl:'../template/ptSelect2.html',
+                link:function (scope,element,attr) {
+
+                }
+            }
+        });
+        myApp.directive('ptOption',function () {
+            return {
+                require:'^ptSelect',
+                scope:{
+                    item:'=ptOption'
+                },
+                restrict:'A',
+                link:function (scope,element,attr,ptSelect) {
+                    element.on('click',function () {
+                        ptSelect.setValue(scope.item);
+                        scope.$apply();
+                    });
+                }
+            }
+        });
+    </script>
+</head>
+<body ng-app="MyApp">
+    <div class="container" ng-controller="UserCtrl">
+        <div class="page-header">
+            <h1>下拉框</h1>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+               <pt-select pt-select-value="selectUser" style="width: 200px">
+                   <li  pt-option="user" ng-repeat="user in list" ng-class="{'active':user===selectUser}">
+                       <a href="">{{user.name}}</a>
+                   </li>
+               </pt-select>
+            </div>
+        </div>
+        <div class="row">
+            {{selectUser}}
+        </div>
+    </div>
+</body>
+</html>
