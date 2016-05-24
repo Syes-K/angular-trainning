@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>scope</title>
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css">
+    <script src="../bower_components/angular/angular.js"></script>
+    <script>
+        var myApp = angular.module('myApp',[]);
+        myApp.run(function ($rootScope) {
+            $rootScope.name ='z3';
+            $rootScope.$on('someBodyLate',function ($e) {
+                console.log('grrr!');
+            });
+        });
+
+        myApp.controller('MyController',function ($scope) {
+//            $scope.name = 'My first ctrl';
+        });
+
+        myApp.controller('ScopeWatchCtrl',function ($scope,$rootScope) {
+
+            $scope.$watch('name',function () {
+                console.log('name is changed');
+            });
+            $scope.users =[
+                {name:'z3'},
+                {name:'z4'},
+                {name:'z5'},
+                {name:'z6'}
+            ];
+            $scope.addUser = function () {
+                $scope.users.push({name:'z'});
+                $scope.$emit('someBodyLate');
+            };
+            $scope.clearUser = function () {
+                $scope.users=[];
+                $rootScope.$broadcast('usersChange',{a:1})
+            };
+            //引用watch 策略
+            $scope.$watch('users',function () {
+                console.log('users is changed by ref');
+            });
+
+            //数组watch 策略
+            $scope.$watchCollection('users',function () {
+                console.log('users is changed by collection ');
+            });
+
+            //值watch 策略
+            $scope.$watch('users',function () {
+                console.log('users is changed by value ');
+            },true);
+        });
+
+        myApp.controller('ScopeEventCtrl',function ($scope) {
+
+        });
+        myApp.directive('ptScopeTrue',function () {
+            return{
+                restrict:'EA',
+                scope:true,
+                controller:function ($scope) {
+                    $scope.$on('usersChange',function ($e) {
+                        console.log($e.targetScope.$id);
+                    });
+                }
+            }
+        });
+        myApp.directive('ptScopeFalse',function () {
+            return{
+                restrict:'EA',
+                scope:false
+            }
+        });
+        myApp.directive('ptScopeSelf',function () {
+            return{
+                restrict:'EA',
+                scope:{
+                    name:'=ptName'
+                },
+                replace:true,
+                template:'<div>  scope:self!!{{name}}<input type="text" ng-model="name"></div>',
+                controller:function ($scope) {
+                   console.log($scope.name);
+                }
+            }
+        });
+    </script>
+</head>
+<body ng-app="myApp">
+    <div class="container">
+        <div class="page-header">
+            <h1>scope</h1>
+        </div>
+        <div class="row">
+            <h3>最简单的scope使用</h3>
+            <input type="text" ng-model="name">
+            {{name}}
+        </div>
+        <div class="row" ng-controller="MyController">
+            <h3>controller 使用的scope</h3>
+            <input type="text" ng-model="name">
+            {{name}}
+        </div>
+        <div class="row" ng-controller="ScopeWatchCtrl">
+            <h3>scope`s watch</h3>
+            <input type="text" ng-model="name">
+            {{name}}
+
+            <div class="list-group">
+                <div class="list-group-item" ng-repeat="u in users">
+                    {{u.name}}
+                    <input type="text" ng-model="u.name">
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-default" ng-click="addUser()">add user</button>
+                <button class="btn btn-default" ng-click="clearUser()">clear users</button>
+            </div>
+        </div>
+
+        <div class="row" ng-controller="ScopeEventCtrl">
+            <input type="text" ng-model="name">
+            <div  pt-scope-true="">
+                scope:true!!
+                {{name}}<input type="text" ng-model="name">
+            </div>
+            <div  pt-scope-false="">
+                scope:false!!
+                {{name}}<input type="text" ng-model="name">
+            </div>
+            <div  pt-scope-self="" pt-name="name">
+
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
