@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .container{
+            width: 1024px;
+            margin: 40px auto;
+            background-color: #f1f1f1;
+            overflow: auto;
+        }
+    </style>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(window).on('resize',resizeContainer)
+            resizeContainer();
+            $('#container').on('scroll',function () {
+                var $scrollElement = $(this);
+                console.log($scrollElement[0].scrollTop);
+            });
+        });
+        function resizeContainer() {
+            $('#container').height($(window).height()-82);
+        }
+    </script>
+</head>
+<body>
+    <div class="container" id="container">
+        this is  top of container
+        <div style="height: 2000px;"></div>
+        this is bottom of container
+    </div>
+</body>
+</html>
