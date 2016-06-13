@@ -1,0 +1,41 @@
+@import "a";
+
+@invalidColor:#f20000;
+
+
+.invalid{
+    input& {
+      border-color:@invalidColor;
+    }
+}
+.invalid-container{
+  position: relative;
+
+  >.invalid-info{
+    position: absolute;
+    left: 100%;
+    margin-left: -10px;
+    &:before{
+      content: 'error';
+    }
+    &:hover{
+      cursor: pointer;
+    }
+  }
+
+  &.active{
+    >.invalid-info{
+      background-color: red;
+    }
+  }
+}
+
+.inlineBlock(@color){
+  display: inline-block;
+  background-color: @color;
+  //...
+}
+
+.calender{
+  .inlineBlock(#fff);
+}

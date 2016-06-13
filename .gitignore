@@ -1,2 +1,4 @@
 # 忽略webStorm 文件
 .idea/**
+# 忽略node_modules
+node_modules/**
