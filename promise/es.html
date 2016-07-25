@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        var p =  new Promise(function (resolve,reject) {
+            setTimeout(function () {
+                resolve('a...!');
+            },1000)
+        });
+        var p2 = new Promise(function (resolve,reject) {
+            setTimeout(function () {
+                resolve('b...!');
+            },300)
+        });
+//        var p3 = new Promise(function () {
+//            return 'c...!';
+//        })
+//        p.then(function (a) {
+//            console.log(a)
+//            //return   a;
+//            return new Promise(function (resolve,reject) {
+//                resolve(a)
+//            });
+//        }).then(function (a) {
+//            console.log(a)
+//        });
+        Promise.race([p,p2]).then(function (a) {
+            console.log(a)
+//            throw  new Error('throw');
+            //return 'all!';
+        })
+//                .then(function (all) {
+//            console.log(all)
+//            return new Promise(function (resolve,reject) {
+//                reject('reject');
+//            });
+//        }).then(function (a) {
+//            console.log(a)
+//        }).catch(function (e) {
+//            console.log(e+' error!!!')
+//            return 'catch';
+//        }).then(function (a) {
+//            console.log(a)
+//        });
+    </script>
+</head>
+<body>
+   
+</body>
+</html>

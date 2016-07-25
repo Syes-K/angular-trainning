@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .girl-container {
+            width: 500px;
+            height: 300px;
+            border: 1px solid #2b542c;
+            overflow: auto;
+        }
+
+        .girl-say {
+            margin-top: 10px;
+        }
+
+        button {
+            margin: 3px;
+            padding: 3px;
+        }
+    </style>
+    <script>
+        function Girl(currentAge, marriedAge, selector) {
+            var Girl = this;
+            Girl._currentAge = currentAge;
+            Girl._marriedAge = marriedAge;
+            Girl.element = document.getElementById(selector);
+            Girl.element.getElementsByTagName('button')[0].addEventListener('click', function () {
+                Girl.addAge(1);
+            });
+        }
+        Girl.prototype.makePromise = function () {
+            var Girl = this;
+            this.say('待我长发及腰,娶我可好');
+            this._marriedPromise = new Promise(function (resolve, reject) {
+                Girl._resolve = resolve;
+                Girl._reject = reject;
+            });
+            return this._marriedPromise;
+        }
+        Girl.prototype.addAge = function (age) {
+            this._currentAge += age;
+
+            if (this._currentAge >= this._marriedAge && this._marriedPromise) {
+                this.say(this._currentAge + '的女孩,长发及腰!!!君何处!?');
+                this._resolve(this._currentAge);
+            }else{
+                this.say('我今年' + this._currentAge + '岁了');
+            }
+        };
+        Girl.prototype.say = function (msg) {
+            var container = this.element.getElementsByClassName('girl-container')[0];
+            container.innerHTML += '<div class="girl-say">' + msg + '</div>';
+            container.scrollTop = container.scrollHeight;
+        }
+        window.onload = function () {
+            var g = new Girl(6, 21, 'girl1');
+            var p = g.makePromise();
+            p.then(function (currentAge) {
+                var letGoWedding = document.createElement('div');
+                letGoWedding.innerHTML='我们去结婚吧!!!';
+               document.body.appendChild(letGoWedding);
+            });
+        }
+    </script>
+</head>
+<body>
+<div id="girl1">
+    <div class="girl-container">
+        <div class="girl-say">我今年6岁了</div>
+    </div>
+    <button id="addAge">some years later</button>
+</div>
+</body>
+</html>

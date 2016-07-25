@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script>
+        $(document).ready(function () {
+            var studentDefer=$.ajax({
+                url:'data/student.json'
+            }).then(function (students) {
+                console.log(students);
+                return students.length;
+            });
+
+            var teacherDefer=$.ajax({
+                url:'data/teacher.json'
+            });
+
+            $.when(studentDefer,teacherDefer).done(function (length,teacher) {
+                console.log(length,teacher[0]);
+            });
+
+
+            var defer = $.Deferred();
+           
+            defer.promise().then(function (index) {
+                console.log(defer.state());
+                console.log(index);
+            },null,function (index) {
+                console.log(defer.state());
+                console.log(index);
+            });
+            var index =20;
+            $('button').click(function () {
+                console.log('log:'+index);
+                defer.notify('notify:'+index);
+                if(index<10){
+                    defer.resolve('resolve:'+index);
+                }
+                if(index<8){
+                    defer.reject('reject:'+index);
+                }
+                index--;
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <button > add</button>
+</body>
+</html>
